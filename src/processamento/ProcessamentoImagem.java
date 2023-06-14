@@ -395,4 +395,128 @@ public class ProcessamentoImagem {
 		}
 		return res;
 	}
+        
+        public static double[] RGBtoLab(BufferedImage img, int image_x, int image_y){ 
+
+            // exemplo de alocacao de vetor contendo as variáveis do espaço de cor Lab
+            double[] pSaida = new double[3]; //Cria um PONTEIRO para armazenar cálculos
+
+            Color orig = new Color(img.getRGB(image_x, image_y));  // lendo o valor RGB do pixel(i,j)
+
+            // Conventendo RGB para sRGB - normalizando entre 0 e 1 
+            // convert 0..255 into 0..1 
+            double r = orig.getRed() / 255.0; 
+            double g = orig.getGreen() /255.0;
+            double b = orig.getBlue() / 255.0; 
+
+            // Usando sRGB 
+            if (r <= 0.04045)  r = r / 12.92; 
+            else  r = Math.pow(((r + 0.055) / 1.055), 2.4); 
+
+            if (g <= 0.04045) 	   g = g / 12.92; 
+            else 	   g = Math.pow(((g + 0.055) / 1.055), 2.4); 
+
+            if (b <= 0.04045) 	   b = b / 12.92; 
+            else   b = Math.pow(((b + 0.055) / 1.055), 2.4); 
+
+            r *= 100.0; // normalizando entre 0 e 100
+            g *= 100.0; // normalizando entre 0 e 100
+            b *= 100.0; // normalizando entre 0 e 100
+
+            //Conversão de sRGB para Espaço de cor XYZ
+            double Xx = r * 0.412424 + g * 0.357579 + b * 0.180464;
+            double Yx = r * 0.212656 + g * 0.715158 + b * 0.0721856;
+            double Zx = r * 0.0193324 + g * 0.119193 + b * 0.950444;
+
+            //Conversão de XYZ para L* a* b* CORRIGIDO usando sRGB antes 
+            // Usando Observer. = 2°, Illuminant = D65
+            // D65 = {95.047, 100.000, 108.883};
+            double x = Xx / 95.047; 
+            double y = Yx / 100; 
+            double z = Zx / 108.883; 
+
+            if (x > 0.008856)    	x = Math.pow(x, 1.0/3.0);  
+            else 	   				x = (7.787 * x) + (16.0/116.0); 
+
+            if (y > 0.008856) 	  	y = Math.pow(y, 1.0/3.0); 
+            else 				  	y = (7.787 * y) + (16.0/116.0); 
+
+            if (z > 0.008856) 	   z = Math.pow(z, 1.0/3.0); 
+            else 				   z = (7.787 * z) + (16.0/116.0);  
+
+            double L = (116.0 * y) - 16.0; 
+            double a = 500.0 * (x - y); 
+            double b_lab = 200.0 * (y - z); 
+
+            //O retorno de cada indice do espaço de cores Lab para cada pixel da imagem dada
+            pSaida[0] = L; 
+            pSaida[1] = a; 
+            pSaida[2] = b_lab; 
+
+            return pSaida;
+    }
+        
+    // Código de conversão de RGB para CMY
+    public static double[] RGBtoCMY(BufferedImage img, int image_x, int image_y){ 
+
+        // exemplo de alocacao de vetor contendo as variáveis do espaço de cor CMY
+        double[] pSaida = new double[3]; //Cria um PONTEIRO para armazenar cálculos
+        
+        Color orig = new Color(img.getRGB(image_x, image_y));  // lendo o valor RGB do pixel(i,j)
+				
+	// Conventendo RGB para CMY - normalizando entre 0 e 1 
+	// convert 0..255 into 0..1 
+	double c = 1 - (orig.getRed() / 255.0); //Ciano
+        double m = 1 - (orig.getGreen() /255.0); //Magenta
+	double y = 1 - (orig.getBlue() / 255.0); //Amarelo
+                
+	//O retorno de cada indice do espaço de cores CMY para cada pixel da imagem dada
+        pSaida[0] = c; 
+        pSaida[1] = m; 
+        pSaida[2] = y; 
+        
+        return pSaida;
+    }
+    
+    public static double[] RGBtoXYZ(BufferedImage img, int image_x, int image_y){ 
+
+        // exemplo de alocacao de vetor contendo as variáveis do espaço de cor Lab
+        double[] pSaida = new double[3]; //Cria um PONTEIRO para armazenar cálculos
+        
+        Color orig = new Color(img.getRGB(image_x, image_y));  // lendo o valor RGB do pixel(i,j)
+				
+	// Conventendo RGB para sRGB - normalizando entre 0 e 1 
+	// convert 0..255 into 0..1 
+	double r = orig.getRed() / 255.0; 
+        double g = orig.getGreen() /255.0;
+	double b = orig.getBlue() / 255.0; 
+
+	// Usando sRGB 
+	if (r <= 0.04045)  r = r / 12.92; 
+	else  r = Math.pow(((r + 0.055) / 1.055), 2.4); 
+			
+	if (g <= 0.04045) 	   g = g / 12.92; 
+	else 	   g = Math.pow(((g + 0.055) / 1.055), 2.4); 
+
+	if (b <= 0.04045) 	   b = b / 12.92; 
+	else   b = Math.pow(((b + 0.055) / 1.055), 2.4); 
+
+	r *= 100.0; // normalizando entre 0 e 100
+        g *= 100.0; // normalizando entre 0 e 100
+	b *= 100.0; // normalizando entre 0 e 100
+
+        //Conversão de sRGB para Espaço de cor XYZ
+        double x = r * 0.412424 + g * 0.357579 + b * 0.180464;
+        double y = r * 0.212656 + g * 0.715158 + b * 0.0721856;
+        double z = r * 0.0193324 + g * 0.119193 + b * 0.950444;
+
+        
+        pSaida[0] = x; 
+        pSaida[1] = y; 
+        pSaida[2] = z;
+        
+        return pSaida;
+    }
+    
+    
 }

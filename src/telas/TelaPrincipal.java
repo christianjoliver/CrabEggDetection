@@ -8,11 +8,13 @@ package telas;
 //import java.awt.Image;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static javafx.scene.paint.Color.color;
@@ -24,7 +26,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import processamento.ProcessamentoImagem;
-import processamento.DeteccaoCorPixel;
 //import org.opencv.core.Core;
 
 /**
@@ -44,17 +45,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
      */
     public TelaPrincipal() {
         initComponents();     
-        jLabel1.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                posx = e.getX();
-                posy = e.getY();
-                if(imagemAtual!=null){
-                    Color color = new Color(imagemAtual.getRGB(posx, posy));
-                    jPanel1.setBackground(color);
-                }        
-            }
-        });     
+             
     }
 
     /**
@@ -74,6 +65,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
+        LABlabel = new javax.swing.JLabel();
+        CMYlabel = new javax.swing.JLabel();
+        XYZlabel = new javax.swing.JLabel();
+        RGBlabel = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -110,18 +105,40 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         jLabel1.setBackground(new java.awt.Color(254, 254, 254));
         jLabel1.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        jLabel1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                jLabel1MouseDragged(evt);
+            }
+        });
         jScrollPane1.setViewportView(jLabel1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 90, Short.MAX_VALUE)
+            .addGap(0, 77, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 77, Short.MAX_VALUE)
         );
+
+        LABlabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        LABlabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        LABlabel.setText("LAB ( )");
+
+        CMYlabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        CMYlabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        CMYlabel.setText("CMY ( )");
+
+        XYZlabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        XYZlabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        XYZlabel.setText("XYZ ( )");
+
+        RGBlabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        RGBlabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        RGBlabel.setText("RGB ( )");
 
         jMenu1.setText("Arquivo");
 
@@ -242,18 +259,40 @@ public class TelaPrincipal extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 854, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(9, 9, 9)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 815, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(49, 49, 49))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(RGBlabel)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(XYZlabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(LABlabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(CMYlabel))
+                        .addGap(63, 63, 63))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(RGBlabel)
+                .addGap(18, 18, 18)
+                .addComponent(CMYlabel)
+                .addGap(18, 18, 18)
+                .addComponent(XYZlabel)
+                .addGap(18, 18, 18)
+                .addComponent(LABlabel)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -402,6 +441,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             try {
                 arqImagemOriginal = fs.getSelectedFile();
                 imagemAtual = ImageIO.read(arqImagemOriginal);
+                jLabel1.setLayout(new FlowLayout());
                 jLabel1.setIcon(new javax.swing.ImageIcon(imagemAtual));
                 imagemFoiCarregada = true;
                 JOptionPane.showMessageDialog(f, "Imagem Carregada!");
@@ -413,6 +453,43 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jLabel1MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseDragged
+        posx = evt.getX();
+        posy = evt.getY();
+        double [] RGBtoLab = new double[3];
+        double [] RGBtoCmy = new double[3];
+        double [] RGBtoXyz = new double[3];
+        DecimalFormat formato = new DecimalFormat("#.#");
+        
+        if(imagemAtual!=null){
+            Color color = new Color(imagemAtual.getRGB(posx, posy));
+            RGBtoLab = ProcessamentoImagem.RGBtoLab(imagemAtual, posx, posy);
+            RGBtoCmy = ProcessamentoImagem.RGBtoCMY(imagemAtual, posx, posy);
+            RGBtoXyz = ProcessamentoImagem.RGBtoXYZ(imagemAtual, posx, posy);
+          
+            String n1, n2, n3, n4, n5, n6, n7, n8, n9;
+            jPanel1.setBackground(color);
+            
+            RGBlabel.setText("LAB("+color.getRed()+";  "+color.getBlue()+";  "+color.getGreen()+")");
+            
+            n1 = formato.format(RGBtoLab[0]);
+            n2 = formato.format(RGBtoLab[1]);
+            n3 = formato.format(RGBtoLab[2]);
+            LABlabel.setText("LAB("+n1+";  "+n2+";  "+n3+")");
+            
+            n1 = formato.format(RGBtoCmy[0]);
+            n2 = formato.format(RGBtoCmy[1]);
+            n3 = formato.format(RGBtoCmy[2]);
+            CMYlabel.setText("CMY("+n1+";  "+n2+";  "+n3+")");
+            
+            n1 = formato.format(RGBtoXyz[0]);
+            n2 = formato.format(RGBtoXyz[1]);
+            n3 = formato.format(RGBtoXyz[2]);
+            XYZlabel.setText("XYZ("+n1+";  "+n2+";  "+n3+")");
+            
+        }
+    }//GEN-LAST:event_jLabel1MouseDragged
 
     
     /**
@@ -453,6 +530,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel CMYlabel;
+    private javax.swing.JLabel LABlabel;
+    private javax.swing.JLabel RGBlabel;
+    private javax.swing.JLabel XYZlabel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
